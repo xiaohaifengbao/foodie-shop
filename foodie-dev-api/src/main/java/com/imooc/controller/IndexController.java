@@ -2,6 +2,7 @@ package com.imooc.controller;
 
 import com.imooc.pojo.Carousel;
 import com.imooc.pojo.Category;
+import com.imooc.pojo.vo.CategoryInfoVO;
 import com.imooc.pojo.vo.CategoryVO;
 import com.imooc.service.CarouselService;
 import com.imooc.service.CategoryService;
@@ -65,6 +66,19 @@ public class IndexController {
             return IMOOCJSONResult.ok(categoryVOS);
         } catch (Exception e) {
             log.error("selectByCategoryId error [{}]", e.getMessage());
+            return IMOOCJSONResult.errorException(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "下拉查询最新商品", notes = "下拉查询最新商品", httpMethod = "GET")
+    @GetMapping(value = "/sixNewItems/{rootCatId}", produces = "application/json;charset=utf-8")
+    public IMOOCJSONResult selectSixNewItems(@PathVariable
+                                              @ApiParam(name = "rootCatId", value = "一级分类ID", example = "1", required = true) Integer rootCatId) {
+        try {
+            List<CategoryInfoVO> categoryInfoVOS = categoryService.selectSixNewItems(rootCatId);
+            return IMOOCJSONResult.ok(categoryInfoVOS);
+        } catch (Exception e) {
+            log.error("selectSixNewItems error [{}]", e.getMessage());
             return IMOOCJSONResult.errorException(e.getMessage());
         }
     }

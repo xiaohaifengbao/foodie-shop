@@ -4,8 +4,10 @@ import com.imooc.enums.LevelEnum;
 import com.imooc.mapper.CategoryMapper;
 import com.imooc.mapper.CategoryMapperCustom;
 import com.imooc.pojo.Category;
+import com.imooc.pojo.vo.CategoryInfoVO;
 import com.imooc.pojo.vo.CategoryVO;
 import com.imooc.service.CategoryService;
+import lombok.experimental.var;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -43,5 +45,10 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryVO> selectCategorySecondLevel(Integer rootCatId) {
         List<CategoryVO> returnList = categoryMapperCustom.selectCategorySecondLevel(rootCatId);
         return returnList;
+    }
+
+    @Override
+    public List<CategoryInfoVO> selectSixNewItems(Integer rootCatId) {
+        return categoryMapperCustom.selectSixNewItems(rootCatId);
     }
 }

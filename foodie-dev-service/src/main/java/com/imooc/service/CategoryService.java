@@ -1,6 +1,7 @@
 package com.imooc.service;
 
 import com.imooc.pojo.Category;
+import com.imooc.pojo.vo.CategoryInfoVO;
 import com.imooc.pojo.vo.CategoryVO;
 
 import java.util.List;
@@ -25,4 +26,11 @@ public interface CategoryService {
      * @return
      */
     List<CategoryVO> selectCategorySecondLevel(Integer rootCatId);
+
+    /**
+     * 查询最新6个商品
+     * @param rootCatId
+     * @return
+     */
+    List<CategoryInfoVO> selectSixNewItems(Integer rootCatId);
 }
