@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.imooc.mapper.ItemsMapperCustom" >
+  <resultMap id="CommentInfoResultMap" type="com.imooc.pojo.vo.ItemComentInfoVO" >
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="userFace" property="userFace" jdbcType="VARCHAR" />
+    <result column="specName" property="specName" jdbcType="VARCHAR" />
+    <result column="createdTime" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <select id="selectcommentCountByLevel" parameterType="string" resultType="java.lang.Integer">
+    SELECT
+        IFNULL( count( 1 ), 0 ) AS `count`
+    FROM
+        items_comments
+    WHERE
+        item_id = #{itemId}
+    GROUP BY
+        comment_level = 1,
+        comment_level = 2,
+        comment_level = 3
+  </select>
+    <select id="selectItemComentInfo" parameterType="map" resultMap="CommentInfoResultMap">
+        SELECT
+            u.nickname,
+            u.face AS `userFace`,
+            c.created_time AS createdTime,
+            c.content,
+            c.sepc_name AS specName
+        FROM
+            users u
+            LEFT JOIN items_comments c ON c.user_id = u.id
+        WHERE
+            c.item_id = #{paramMap.itemId}
+            <if test="paramMap.level != null and paramMap.level !=''">
+                AND c.comment_level = #{paramMap.level}
+            </if>
+    </select>
+</mapper>

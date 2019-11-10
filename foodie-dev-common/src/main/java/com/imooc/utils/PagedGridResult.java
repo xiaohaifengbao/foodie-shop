@@ -1,5 +1,7 @@
 package com.imooc.utils;
 
+import com.github.pagehelper.PageInfo;
+
 import java.util.List;
 
 /**
@@ -9,12 +11,12 @@ import java.util.List;
  * @Description: 用来返回分页Grid的数据格式
  * Copyright: Copyright (c) 2019
  */
-public class PagedGridResult {
+public class PagedGridResult<T> {
 	
 	private int page;			// 当前页数
 	private int total;			// 总页数	
 	private long records;		// 总记录数
-	private List<?> rows;		// 每行显示的内容
+	private List<T> rows;		// 每行显示的内容
 
 	public int getPage() {
 		return page;
@@ -34,10 +36,19 @@ public class PagedGridResult {
 	public void setRecords(long records) {
 		this.records = records;
 	}
-	public List<?> getRows() {
+	public List<T> getRows() {
 		return rows;
 	}
-	public void setRows(List<?> rows) {
+	public void setRows(List<T> rows) {
 		this.rows = rows;
 	}
+
+	public PagedGridResult(PageInfo<T> page) {
+		this.rows = page.getList();
+		this.page = page.getPageNum();
+		this.total = page.getPages();
+		this.records = page.getTotal();
+	}
+
+	public PagedGridResult(){};
 }
