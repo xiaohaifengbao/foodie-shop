@@ -11,4 +11,6 @@ public class BaseController {
     public static final Integer HOME = 1;
     // 默认每页记录数
     public static final Integer RECORD = 10;
+    // 商品展示每页记录数
+    public static final Integer ITEM_RECORD = 20;
 }

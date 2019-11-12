@@ -4,6 +4,7 @@ import com.imooc.pojo.*;
 import com.imooc.pojo.vo.ItemComentInfoVO;
 import com.imooc.pojo.vo.ItemCommentVo;
 import com.imooc.pojo.vo.ItemInfoVO;
+import com.imooc.pojo.vo.ItemSearchVO;
 import com.imooc.service.ItemInfoService;
 import com.imooc.utils.IMOOCJSONResult;
 import com.imooc.utils.PagedGridResult;
@@ -93,4 +94,57 @@ public class ItemsController extends BaseController{
 
         return IMOOCJSONResult.ok(returnModel);
     }
+
+    @ApiOperation(value = "根据关键字搜索商品", notes = "根据关键字搜索商品", httpMethod = "GET")
+    @GetMapping(value = "/search", produces = "application/json;charset=utf-8")
+    public IMOOCJSONResult searchtItemBykeywords(@ApiParam(name = "keywords", value = "关键字",example = "天天吃货", required = true)
+                                                @RequestParam("keywords") String keywords,
+                                                @ApiParam(name = "sort", value = "排序",example = "p", required = true)
+                                                @RequestParam("sort") String sort,
+                                                @ApiParam(name = "page", value = "第几页",example = "1", required = false)
+                                                @RequestParam("page") Integer page,
+                                                @ApiParam(name = "pageSize", value = "每页记录数",example = "20", required = false)
+                                                @RequestParam("pageSize") Integer pageSize) {
+
+
+        if(page == null) {
+            page = ItemsController.HOME;
+        }
+        if(pageSize == null) {
+            pageSize = ItemsController.ITEM_RECORD;
+        }
+
+
+        PagedGridResult<ItemSearchVO> returnModel = itemInfoService
+                .searchItemByKeywords(keywords, sort, page, pageSize);
+
+        return IMOOCJSONResult.ok(returnModel);
+    }
+
+    @ApiOperation(value = "根据分类搜索商品", notes = "根据分类搜索商品", httpMethod = "GET")
+    @GetMapping(value = "/catItems", produces = "application/json;charset=utf-8")
+    public IMOOCJSONResult searchtItemBykeywords(@ApiParam(name = "catId", value = "分类ID",example = "37", required = true)
+                                                 @RequestParam("catId") Integer catId,
+                                                 @ApiParam(name = "sort", value = "排序",example = "p", required = true)
+                                                 @RequestParam("sort") String sort,
+                                                 @ApiParam(name = "page", value = "第几页",example = "1", required = false)
+                                                 @RequestParam("page") Integer page,
+                                                 @ApiParam(name = "pageSize", value = "每页记录数",example = "20", required = false)
+                                                 @RequestParam("pageSize") Integer pageSize) {
+
+
+        if(page == null) {
+            page = ItemsController.HOME;
+        }
+        if(pageSize == null) {
+            pageSize = ItemsController.ITEM_RECORD;
+        }
+
+
+        PagedGridResult<ItemSearchVO> returnModel = itemInfoService
+                .searchItemByKeywords(catId, sort, page, pageSize);
+
+        return IMOOCJSONResult.ok(returnModel);
+    }
+
 }

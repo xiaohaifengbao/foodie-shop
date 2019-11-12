@@ -6,6 +6,7 @@ import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
 import com.imooc.pojo.vo.ItemComentInfoVO;
 import com.imooc.pojo.vo.ItemCommentVo;
+import com.imooc.pojo.vo.ItemSearchVO;
 import com.imooc.utils.PagedGridResult;
 
 import java.util.List;
@@ -64,4 +65,29 @@ public interface ItemInfoService {
                                                            Integer page,
                                                            Integer pageSize);
 
+    /**
+     * 根据关键字搜索
+     * @param keywords
+     * @param sort
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PagedGridResult<ItemSearchVO> searchItemByKeywords(String keywords,
+                                                       String sort,
+                                                       Integer page,
+                                                       Integer pageSize);
+
+    /**
+     * 根据分类搜索
+     * @param catId
+     * @param sort
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PagedGridResult<ItemSearchVO> searchItemByKeywords(Integer catId,
+                                                       String sort,
+                                                       Integer page,
+                                                       Integer pageSize);
 }

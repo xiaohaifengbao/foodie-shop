@@ -9,11 +9,10 @@ import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
 import com.imooc.pojo.vo.ItemComentInfoVO;
 import com.imooc.pojo.vo.ItemCommentVo;
+import com.imooc.pojo.vo.ItemSearchVO;
 import com.imooc.service.ItemInfoService;
 import com.imooc.utils.DesensitizationUtil;
 import com.imooc.utils.PagedGridResult;
-import com.sun.corba.se.spi.ior.ObjectKey;
-import org.aspectj.weaver.ast.Var;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,5 +117,41 @@ public class ItemInfoServiceImpl implements ItemInfoService {
         PageInfo pageInfo = new PageInfo(itemList);
 
         return new PagedGridResult<ItemComentInfoVO>(pageInfo);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedGridResult<ItemSearchVO> searchItemByKeywords(String keywords, String sort, Integer page, Integer pageSize) {
+
+        HashMap paramsMap = new HashMap();
+        paramsMap.put("keywords", keywords);
+        paramsMap.put("sort", sort);
+
+        PageHelper.startPage(page, pageSize);
+
+        List<ItemSearchVO> itemList = itemsMapperCustom.searchItemByKeywords(paramsMap);
+
+        PageInfo pageInfo = new PageInfo(itemList);
+
+        PagedGridResult<ItemSearchVO> returnModel = new PagedGridResult<ItemSearchVO>(pageInfo);
+        return returnModel;
+
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedGridResult<ItemSearchVO> searchItemByKeywords(Integer catId, String sort, Integer page, Integer pageSize) {
+        HashMap paramsMap = new HashMap();
+        paramsMap.put("catId", catId);
+        paramsMap.put("sort", sort);
+
+        PageHelper.startPage(page, pageSize);
+
+        List<ItemSearchVO> itemList = itemsMapperCustom.searchItemByCatId(paramsMap);
+
+        PageInfo pageInfo = new PageInfo(itemList);
+
+        PagedGridResult<ItemSearchVO> returnModel = new PagedGridResult<ItemSearchVO>(pageInfo);
+        return returnModel;
     }
 }

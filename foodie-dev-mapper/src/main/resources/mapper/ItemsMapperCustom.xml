@@ -36,4 +36,65 @@
                 AND c.comment_level = #{paramMap.level}
             </if>
     </select>
+    <!--根据关键字搜索-->
+    <select id="searchItemByKeywords" parameterType="map" resultType="com.imooc.pojo.vo.ItemSearchVO">
+        SELECT
+        i.id AS itemId,
+        i.item_name AS itemName,
+        sp.price AS price,
+        ii.url AS imgUrl,
+        i.sell_counts AS sellCounts
+        FROM
+        items i
+        LEFT JOIN ( SELECT item_id, MIN( price_discount ) AS price FROM items_spec GROUP BY item_id ) sp ON i.id = sp.item_id
+        LEFT JOIN items_img ii ON i.id = ii.item_id
+        WHERE
+        ii.is_main = 1
+        AND i.item_name LIKE '%${paramsMap.keywords}%'
+        <if test="paramsMap.sort != null and paramsMap.sort!= ''">
+             ORDER BY
+            <choose>
+                <when test="paramsMap.sort == &quot;c&quot;">
+                    i.sell_counts
+                </when>
+                <when test="paramsMap.sort == &quot;p&quot;">
+                    sp.price
+                </when>
+                <otherwise>
+                    i.item_name
+                </otherwise>
+            </choose>
+            DESC
+        </if>
+    </select>
+    <select id="searchItemByCatId" parameterType="map" resultType="com.imooc.pojo.vo.ItemSearchVO">
+        SELECT
+        i.id AS itemId,
+        i.item_name AS itemName,
+        sp.price AS price,
+        ii.url AS imgUrl,
+        i.sell_counts AS sellCounts
+        FROM
+        items i
+        LEFT JOIN ( SELECT item_id, MIN( price_discount ) AS price FROM items_spec GROUP BY item_id ) sp ON i.id = sp.item_id
+        LEFT JOIN items_img ii ON i.id = ii.item_id
+        WHERE
+        ii.is_main = 1
+        AND i.cat_id = #{paramsMap.catId}
+        <if test="paramsMap.sort != null and paramsMap.sort!= ''">
+            ORDER BY
+            <choose>
+                <when test="paramsMap.sort == &quot;c&quot;">
+                    i.sell_counts
+                </when>
+                <when test="paramsMap.sort == &quot;p&quot;">
+                    sp.price
+                </when>
+                <otherwise>
+                    i.item_name
+                </otherwise>
+            </choose>
+            DESC
+        </if>
+    </select>
 </mapper>
