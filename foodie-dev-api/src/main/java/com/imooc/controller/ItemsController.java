@@ -1,10 +1,7 @@
 package com.imooc.controller;
 
 import com.imooc.pojo.*;
-import com.imooc.pojo.vo.ItemComentInfoVO;
-import com.imooc.pojo.vo.ItemCommentVo;
-import com.imooc.pojo.vo.ItemInfoVO;
-import com.imooc.pojo.vo.ItemSearchVO;
+import com.imooc.pojo.vo.*;
 import com.imooc.service.ItemInfoService;
 import com.imooc.utils.IMOOCJSONResult;
 import com.imooc.utils.PagedGridResult;
@@ -145,6 +142,16 @@ public class ItemsController extends BaseController{
                 .searchItemByKeywords(catId, sort, page, pageSize);
 
         return IMOOCJSONResult.ok(returnModel);
+    }
+
+    @ApiOperation(value = "刷新购物车", notes = "刷新购物车", httpMethod = "GET")
+    @GetMapping(value = "/refresh", produces = "application/json;charset=utf-8")
+    public IMOOCJSONResult searchtItemBykeywords(@ApiParam(name = "itemSpecIds", value = "规格ID",example = "1,2,3", required = false)
+                                                 @RequestParam("itemSpecIds") String itemSpecIds) {
+
+        List<ShopCartVO> shopCartList = itemInfoService.refreshShopCart(itemSpecIds);
+
+        return IMOOCJSONResult.ok(shopCartList);
     }
 
 }

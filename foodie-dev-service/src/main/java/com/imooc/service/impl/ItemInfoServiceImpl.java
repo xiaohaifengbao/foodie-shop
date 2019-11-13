@@ -10,6 +10,7 @@ import com.imooc.pojo.ItemsSpec;
 import com.imooc.pojo.vo.ItemComentInfoVO;
 import com.imooc.pojo.vo.ItemCommentVo;
 import com.imooc.pojo.vo.ItemSearchVO;
+import com.imooc.pojo.vo.ShopCartVO;
 import com.imooc.service.ItemInfoService;
 import com.imooc.utils.DesensitizationUtil;
 import com.imooc.utils.PagedGridResult;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -154,4 +157,11 @@ public class ItemInfoServiceImpl implements ItemInfoService {
         PagedGridResult<ItemSearchVO> returnModel = new PagedGridResult<ItemSearchVO>(pageInfo);
         return returnModel;
     }
+
+    @Override
+    public List<ShopCartVO> refreshShopCart(String specIds) {
+        String[] specArray = specIds.split(",");
+        return itemsMapperCustom.refreshShopCart(Arrays.asList(specArray));
+    }
+
 }

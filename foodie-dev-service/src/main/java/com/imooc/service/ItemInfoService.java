@@ -7,6 +7,7 @@ import com.imooc.pojo.ItemsSpec;
 import com.imooc.pojo.vo.ItemComentInfoVO;
 import com.imooc.pojo.vo.ItemCommentVo;
 import com.imooc.pojo.vo.ItemSearchVO;
+import com.imooc.pojo.vo.ShopCartVO;
 import com.imooc.utils.PagedGridResult;
 
 import java.util.List;
@@ -90,4 +91,11 @@ public interface ItemInfoService {
                                                        String sort,
                                                        Integer page,
                                                        Integer pageSize);
+
+    /**
+     * 刷新购物车
+     * @param specIds
+     * @return
+     */
+    List<ShopCartVO> refreshShopCart(String specIds);
 }
