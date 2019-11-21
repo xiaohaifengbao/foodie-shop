@@ -32,4 +32,17 @@ public interface UserAddressService {
      * @return
      */
     UserAddress updateUserAddress(AddressBO addressBO);
+
+    /**
+     * 删除用户地址
+     * @param addressId
+     */
+    void deleteUserAddress(String addressId);
+
+    /**
+     * 设置默认地址
+     * @param addressId
+     * @param userId
+     */
+    void setDefaultAddress(String addressId, String userId);
 }

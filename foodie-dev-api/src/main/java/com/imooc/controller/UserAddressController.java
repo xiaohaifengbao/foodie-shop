@@ -7,6 +7,7 @@ import com.imooc.utils.IMOOCJSONResult;
 import com.imooc.utils.MobileEmailUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class UserAddressController {
     @Autowired
     private UserAddressService userAddressService;
 
-    @ApiOperation(value = "查询收货地址", notes = "查询收货地址", httpMethod = "GET")
-    @GetMapping(value = "/list", produces = "application/json;charset=utf-8")
+    @ApiOperation(value = "查询收货地址", notes = "查询收货地址", httpMethod = "POST")
+    @PostMapping(value = "/list", produces = "application/json;charset=utf-8")
     public IMOOCJSONResult selectUserAddress(@RequestParam("userId") String userId) {
 
         if(StringUtils.isBlank(userId)) {
@@ -56,8 +57,8 @@ public class UserAddressController {
         return IMOOCJSONResult.ok(userAddress);
     }
 
-    @ApiOperation(value = "修改收货地址", notes = "修改收货地址", httpMethod = "PUT")
-    @PutMapping(value = "/update", produces = "application/json;charset=utf-8")
+    @ApiOperation(value = "修改收货地址", notes = "修改收货地址", httpMethod = "POST")
+    @PostMapping(value = "/update", produces = "application/json;charset=utf-8")
     public IMOOCJSONResult updateUserAddress(@RequestBody AddressBO addressBO) {
 
         if(StringUtils.isBlank(addressBO.getUserId())) {
@@ -71,6 +72,34 @@ public class UserAddressController {
         UserAddress userAddress = userAddressService.updateUserAddress(addressBO);
 
         return IMOOCJSONResult.ok(userAddress);
+    }
+
+    @ApiOperation(value = "删除收货地址", notes = "删除收货地址", httpMethod = "POST")
+    @PostMapping(value = "/delete", produces = "application/json;charset=utf-8")
+    public IMOOCJSONResult updateUserAddress(@RequestParam("addressId")
+                                                 @ApiParam(name = "addressId", value = "地址ID",required = true) String addressId) {
+
+        if(StringUtils.isBlank(addressId)) {
+            return IMOOCJSONResult.errorMsg("用户ID不能为空");
+        }
+
+        userAddressService.deleteUserAddress(addressId);
+        return IMOOCJSONResult.ok();
+    }
+
+    @ApiOperation(value = "设置默认地址", notes = "设置默认地址", httpMethod = "POST")
+    @PostMapping(value = "/setDefalut", produces = "application/json;charset=utf-8")
+    public IMOOCJSONResult setDefaultAddress(@RequestParam("addressId")
+                                             @ApiParam(name = "addressId", value = "地址ID",required = true) String addressId,
+                                             @RequestParam("userId")
+                                             @ApiParam(name = "userId", value = "用户ID",required = true) String userId) {
+
+        if(StringUtils.isBlank(addressId) || StringUtils.isBlank(userId)) {
+            return IMOOCJSONResult.errorMsg("用户ID或者地址ID错误");
+        }
+
+        userAddressService.setDefaultAddress(addressId, userId);
+        return IMOOCJSONResult.ok();
     }
 
     /**
