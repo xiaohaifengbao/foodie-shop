@@ -117,4 +117,15 @@
                 #{specId}
             </foreach>
     </select>
+
+    <update id="decreaseStack">
+        UPDATE
+          items_spec
+        SET
+          stock = stock - #{stock}
+        WHERE
+          id = #{specId}
+        AND
+          stock &gt;= #{stock}
+    </update>
 </mapper>

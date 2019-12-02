@@ -117,4 +117,18 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public UserAddress queryUserAddressById(String addressId) {
+
+        UserAddress userAddress = new UserAddress();
+        userAddress.setId(addressId);
+
+        UserAddress returnModel = userAddressMapper.selectOne(userAddress);
+
+        return returnModel;
+
+
+    }
+
 }

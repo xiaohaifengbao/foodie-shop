@@ -45,4 +45,10 @@ public interface UserAddressService {
      * @param userId
      */
     void setDefaultAddress(String addressId, String userId);
+
+    /**
+     * 获取用户收货信息
+     * @return
+     */
+    UserAddress queryUserAddressById(String addressId);
 }

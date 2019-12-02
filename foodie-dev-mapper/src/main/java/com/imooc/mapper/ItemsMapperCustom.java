@@ -45,4 +45,8 @@ public interface ItemsMapperCustom {
      * @return
      */
     List<ShopCartVO> refreshShopCart(@Param("paramsList") List<String> paramsList);
+
+
+    int decreaseStack(@Param("specId") String specId,
+                       @Param("stock") Integer stock);
 }

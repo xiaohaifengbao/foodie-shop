@@ -2,6 +2,7 @@ package com.imooc.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.imooc.enums.YesOrNoEnum;
 import com.imooc.mapper.*;
 import com.imooc.pojo.Items;
 import com.imooc.pojo.ItemsImg;
@@ -158,10 +159,46 @@ public class ItemInfoServiceImpl implements ItemInfoService {
         return returnModel;
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<ShopCartVO> refreshShopCart(String specIds) {
+
         String[] specArray = specIds.split(",");
         return itemsMapperCustom.refreshShopCart(Arrays.asList(specArray));
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public ItemsSpec queryItemInfoBySpecId(String specId) {
+
+        ItemsSpec itemsSpec = new ItemsSpec();
+        itemsSpec.setId(specId);
+
+        return itemsSpecMapper.selectOne(itemsSpec);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public ItemsImg queryItemImgById(String itemId) {
+
+        ItemsImg itemsImg = new ItemsImg();
+        itemsImg.setItemId(itemId);
+        itemsImg.setIsMain(YesOrNoEnum.YES.type);
+
+        return itemsImgMapper.selectOne(itemsImg);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void decreaseStock(String specId, Integer stock) {
+        // 乐观锁
+            // 减少库存
+        int result = itemsMapperCustom.decreaseStack(specId, stock);
+
+        if(result != 1) {
+            throw new RuntimeException("订单创建失败, 原因：库存不足！");
+        }
+    }
+
 
 }
