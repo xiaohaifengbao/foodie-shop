@@ -1,12 +1,14 @@
 package com.imooc.service.impl;
 
 import com.imooc.enums.OrderStatusEnum;
+import com.imooc.enums.PayEnum;
 import com.imooc.enums.YesOrNoEnum;
 import com.imooc.mapper.OrderItemsMapper;
 import com.imooc.mapper.OrderStatusMapper;
 import com.imooc.mapper.OrdersMapper;
 import com.imooc.pojo.*;
 import com.imooc.pojo.bo.OrdersBO;
+import com.imooc.pojo.vo.MerchantOrdersVO;
 import com.imooc.service.ItemInfoService;
 import com.imooc.service.OrderService;
 import com.imooc.service.UserAddressService;
@@ -46,7 +48,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public void createOrder(OrdersBO ordersBO) {
+    public MerchantOrdersVO createOrder(OrdersBO ordersBO) {
+
+        MerchantOrdersVO merchantOrdersVO = new MerchantOrdersVO();
 
         String addressId = ordersBO.getAddressId();
         String userId = ordersBO.getUserId();
@@ -129,11 +133,42 @@ public class OrderServiceImpl implements OrderService {
         orderStatus.setOrderId(orderId);
         orderStatus.setOrderStatus(OrderStatusEnum.UN_PAYMENT.value);
         orderStatus.setCreatedTime(new Date());
-
         // 入库
         orderStatusMapper.insertSelective(orderStatus);
 
+        // 构建支付中心订单信息
+        MerchantOrdersVO.PayCenterOrdersVO payCenterOrdersVO = new MerchantOrdersVO.PayCenterOrdersVO();
+        payCenterOrdersVO.setPayMethod(PayEnum.WEIXIN.value);
+        // TODO 假数据 一分钱方便测试
+        payCenterOrdersVO.setAmount(1);
+        payCenterOrdersVO.setMerchantOrderId(orderId);
+        payCenterOrdersVO.setMerchantUserId(userId);
 
+        merchantOrdersVO.setPayCenterOrdersVO(payCenterOrdersVO);
+        merchantOrdersVO.setOrderId(orderId);
 
+        return merchantOrdersVO;
     }
+
+    @Override
+    public void updateOrderStatus(String orderId, Integer value) {
+
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setOrderId(orderId);
+        orderStatus.setOrderStatus(value);
+        orderStatus.setPayTime(new Date());
+
+        orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
+    }
+
+    @Override
+    public OrderStatus getPaidOrderInfo(String orderId) {
+
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setOrderId(orderId);
+
+        return orderStatusMapper.selectOne(orderStatus);
+    }
+
+
 }

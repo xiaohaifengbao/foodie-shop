@@ -13,4 +13,12 @@ public class BaseController {
     public static final Integer RECORD = 10;
     // 商品展示每页记录数
     public static final Integer ITEM_RECORD = 20;
+
+    // 微信支付发送给天天吃货的回调地址
+    String returnUrl = "http://qm7tnz.natappfree.cc/orders/updateOrderStatus";
+
+    // 支付中心的接口地址
+    String payCenterUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";
+
+
 }
