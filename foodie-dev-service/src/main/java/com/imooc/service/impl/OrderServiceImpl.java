@@ -12,6 +12,7 @@ import com.imooc.pojo.vo.MerchantOrdersVO;
 import com.imooc.service.ItemInfoService;
 import com.imooc.service.OrderService;
 import com.imooc.service.UserAddressService;
+import com.imooc.utils.DateUtil;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -150,6 +151,7 @@ public class OrderServiceImpl implements OrderService {
         return merchantOrdersVO;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updateOrderStatus(String orderId, Integer value) {
 
@@ -161,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
         orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public OrderStatus getPaidOrderInfo(String orderId) {
 
@@ -168,6 +171,36 @@ public class OrderServiceImpl implements OrderService {
         orderStatus.setOrderId(orderId);
 
         return orderStatusMapper.selectOne(orderStatus);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void closeOrder() {
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setOrderStatus(OrderStatusEnum.UN_PAYMENT.value);
+
+        // 获取所有未付款的订单
+        List<OrderStatus> orderList = orderStatusMapper.select(orderStatus);
+        orderList.forEach(orderModel -> {
+            // 获取订单创建时间
+            Date createdTime = orderModel.getCreatedTime();
+            // 获取下单过去时间
+            int days = DateUtil.daysBetween(createdTime, new Date());
+            if(days >= 1) {
+                this.updateCloseOrder(orderModel);
+            }
+        });
+    }
+
+    /**
+     * 修改订单状态-关闭
+     * @param orderStatus
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateCloseOrder(OrderStatus orderStatus) {
+        orderStatus.setOrderStatus(OrderStatusEnum.BUSINESS_SUCCESS.value);
+        orderStatus.setCloseTime(new Date());
+        orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
     }
 
 
