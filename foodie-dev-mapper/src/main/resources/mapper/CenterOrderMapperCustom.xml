@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.imooc.mapper.OrderMapperCustom" >
+    <!--订单商品信息-->
+  <resultMap id="centerOrderMap" type="com.imooc.pojo.vo.center.CenterOrderVO" >
+    <id column="orderId" property="orderId" jdbcType="VARCHAR" />
+    <result column="createdTime" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="payMethod" property="payMethod" jdbcType="INTEGER" />
+    <result column="realPayAmount" property="realPayAmount" jdbcType="INTEGER" />
+    <result column="orderStatus" property="orderStatus" jdbcType="INTEGER" />
+    <result column="postAmount" property="postAmount" jdbcType="INTEGER" />
+    <collection property="subOrderItemList"
+                select="selectItemByOrderId"
+                column="orderId"
+                ofType="com.imooc.pojo.vo.center.CenterOrderItemVO">
+      <result column="itemName" property="itemName" jdbcType="VARCHAR" />
+      <result column="itemId" property="itemId" jdbcType="VARCHAR" />
+      <result column="itemImg" property="itemImg" jdbcType="VARCHAR" />
+      <result column="itemSpecName" property="itemSpecName" jdbcType="VARCHAR" />
+      <result column="price" property="price" jdbcType="INTEGER" />
+      <result column="buyCounts" property="buyCounts" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+    <!--查询订单商品-->
+  <select id="queryCenterOrderInfo" parameterType="Map" resultMap="centerOrderMap">
+        SELECT
+            o.id AS orderId,
+            os.order_status as orderStatus,
+            o.created_time AS createdTime,
+            o.pay_method AS payMethod,
+            o.real_pay_amount + o.post_amount AS realPayAmount,
+            o.post_amount AS postAmount
+        FROM
+            orders o
+            LEFT JOIN order_status os ON o.id = os.order_id
+        WHERE
+            o.user_id = #{paramMap.userId}
+            AND o.is_delete = 0
+            <if test="paramMap.orderStatus != null">
+                AND os.order_status = #{paramMap.orderStatus}
+            </if>
+        ORDER BY
+            o.created_time DESC
+  </select>
+    <select id="selectItemByOrderId" parameterType="String" resultType="com.imooc.pojo.vo.center.CenterOrderItemVO">
+       SELECT
+            oi.item_name AS itemName,
+            oi.item_id AS itemId,
+            oi.item_img AS itemImg,
+            oi.item_spec_name AS itemSpecName,
+            oi.price AS price,
+            oi.buy_counts AS buyCounts
+        FROM
+            order_items oi
+        WHERE
+            oi.order_id = #{orderId}
+    </select>
+</mapper>

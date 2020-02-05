@@ -198,7 +198,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public void updateCloseOrder(OrderStatus orderStatus) {
-        orderStatus.setOrderStatus(OrderStatusEnum.BUSINESS_SUCCESS.value);
+        orderStatus.setOrderStatus(OrderStatusEnum.BUSINESS_CLOSE.value);
         orderStatus.setCloseTime(new Date());
         orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
     }
