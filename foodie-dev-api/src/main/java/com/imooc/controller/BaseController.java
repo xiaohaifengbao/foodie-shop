@@ -1,5 +1,10 @@
 package com.imooc.controller;
 
+import com.imooc.pojo.Orders;
+import com.imooc.service.center.CenterOrderService;
+import com.imooc.utils.IMOOCJSONResult;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * @Classname BaseController
  * @Description TODO
@@ -7,6 +12,10 @@ package com.imooc.controller;
  * @Created by 于明灏
  */
 public class BaseController {
+
+    @Autowired
+    private CenterOrderService centerOrderService;
+
     // 首页
     public static final Integer HOME = 1;
     // 默认每页记录数
@@ -19,6 +28,21 @@ public class BaseController {
 
     // 支付中心的接口地址
     String payCenterUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";
+
+
+    /**
+     * 校验订单和用户，避免用户非法调用
+     * @return
+     */
+    public IMOOCJSONResult checkOrderUser(String userId, String orderId) {
+
+        Orders orders = centerOrderService.checkOrderUser(userId, orderId);
+
+        if(orders == null) {
+            return IMOOCJSONResult.errorMsg("订单不存在");
+        }
+        return IMOOCJSONResult.ok(orders);
+    }
 
 
 }

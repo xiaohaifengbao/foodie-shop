@@ -1,14 +1,20 @@
 package com.imooc.service.impl.center;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.imooc.enums.OrderStatusEnum;
 import com.imooc.enums.YesOrNoEnum;
+import com.imooc.mapper.CenterOrderMapperCustom;
 import com.imooc.mapper.OrderMapperCustom;
 import com.imooc.mapper.OrderStatusMapper;
 import com.imooc.mapper.OrdersMapper;
 import com.imooc.pojo.OrderStatus;
 import com.imooc.pojo.Orders;
 import com.imooc.pojo.vo.center.CenterOrderVO;
+import com.imooc.pojo.vo.center.CenterTrendVO;
+import com.imooc.pojo.vo.center.StatusCountVO;
 import com.imooc.service.center.CenterOrderService;
+import com.imooc.utils.PagedGridResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -36,6 +42,8 @@ public class CenterOrderServiceImpl implements CenterOrderService {
     private OrderStatusMapper orderStatusMapper;
     @Resource
     private OrdersMapper ordersMapper;
+    @Resource
+    private CenterOrderMapperCustom centerOrderMapperCustom;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
@@ -85,5 +93,41 @@ public class CenterOrderServiceImpl implements CenterOrderService {
         int result = orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
 
         return result == 1 ? true : false;
+    }
+
+    @Override
+    public Orders checkOrderUser(String userId, String orderId) {
+
+        Orders orders = new Orders();
+        orders.setUserId(userId);
+        orders.setId(orderId);
+
+        return ordersMapper.selectOne(orders);
+    }
+
+    @Override
+    public StatusCountVO statusCounts(String userId) {
+
+        Integer waitPayCounts = centerOrderMapperCustom
+                .statusCounts(userId, OrderStatusEnum.UN_PAYMENT.value);
+        Integer waitDeliverCounts = centerOrderMapperCustom
+                .statusCounts(userId, OrderStatusEnum.PAYMENT.value);
+        Integer waitReceiveCounts = centerOrderMapperCustom
+                .statusCounts(userId, OrderStatusEnum.SHIP.value);
+        Integer waitCommentCounts = centerOrderMapperCustom
+                .statusCounts(userId, OrderStatusEnum.BUSINESS_SUCCESS.value);
+
+        return new StatusCountVO(waitPayCounts,
+                                waitDeliverCounts,
+                                waitReceiveCounts,
+                                waitCommentCounts);
+
+    }
+
+    @Override
+    public PagedGridResult trend(String userId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<CenterTrendVO> modelList =  centerOrderMapperCustom.trend(userId);
+        return new PagedGridResult(new PageInfo(modelList));
     }
 }

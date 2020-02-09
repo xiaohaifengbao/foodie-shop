@@ -1,6 +1,8 @@
 package com.imooc.service.center;
 
+import com.imooc.pojo.Orders;
 import com.imooc.pojo.vo.center.CenterOrderVO;
+import com.imooc.pojo.vo.center.StatusCountVO;
 import com.imooc.utils.PagedGridResult;
 
 import java.util.List;
@@ -41,4 +43,17 @@ public interface CenterOrderService {
      * @return
      */
     boolean confirmReceive(String orderId);
+
+    /**
+     * 校验用户和订单
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    Orders checkOrderUser(String userId, String orderId);
+
+
+    StatusCountVO statusCounts(String userId);
+
+    PagedGridResult trend(String userId, Integer page, Integer pageSize);
 }

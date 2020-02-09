@@ -37,6 +37,9 @@ public class CenterOrderVO {
     @ApiModelProperty("订单运费")
     private Integer postAmount;
 
+    @ApiModelProperty("是否评价")
+    private Integer isComment;
+
     @ApiModelProperty("商品信息")
     private List<CenterOrderItemVO> subOrderItemList;
 }

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.imooc.controller.BaseController;
 import com.imooc.pojo.OrderStatus;
 import com.imooc.pojo.vo.center.CenterOrderVO;
+import com.imooc.pojo.vo.center.StatusCountVO;
 import com.imooc.service.center.CenterOrderService;
 import com.imooc.utils.IMOOCJSONResult;
 import com.imooc.utils.PagedGridResult;
@@ -115,6 +116,38 @@ public class CenterOrderController extends BaseController {
             return IMOOCJSONResult.errorMsg("确认收货失败");
         }
 
+    }
+
+    @ApiOperation(value = "我的订单数", notes = "我的订单数", httpMethod = "POST")
+    @PostMapping("/statusCounts")
+    public IMOOCJSONResult statusCounts(
+            @ApiParam(name = "userId", value = "用户ID", required = true)
+            @RequestParam("userId") String userId) {
+
+        if(StringUtils.isBlank(userId)) {
+            return IMOOCJSONResult.errorMsg("用户ID不能为空");
+        }
+
+        StatusCountVO statusCountVO = centerOrderService.statusCounts(userId);
+
+        return IMOOCJSONResult.ok(statusCountVO);
+    }
+
+    @ApiOperation(value = "订单动向", notes = "订单动向", httpMethod = "POST")
+    @PostMapping("/trend")
+    public IMOOCJSONResult trend(
+            @ApiParam(name = "trend", value = "用户ID", required = true)
+            @RequestParam("userId") String userId,
+            @RequestParam("page") Integer page,
+            @RequestParam("pageSize") Integer pageSize) {
+
+        if(StringUtils.isBlank(userId)) {
+            return IMOOCJSONResult.errorMsg("用户ID不能为空");
+        }
+
+        PagedGridResult pagedGridResult = centerOrderService.trend(userId, page, pageSize);
+
+        return IMOOCJSONResult.ok(pagedGridResult);
     }
 
 }
